@@ -9,8 +9,17 @@ const localStorageKey = 'contacts';
 
 export default function App() {
   const [contactList, setContactList] = useState(() => readContacts());
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredContacts, setFilteredContacts] = useState(contactList);
 
   function resetContacts() {
+    setSearchValue('');
+
+    if (contactList.length > 0) {
+      setFilteredContacts(contactList);
+      return;
+    }
+
     setContactList(baseContactList);
     saveContacts(baseContactList);
   }
@@ -29,15 +38,19 @@ export default function App() {
     localStorage.setItem(localStorageKey, JSON.stringify(contacts));
   }
 
-  const onDelete = id => {
+  function onDelete(id) {
     const newContactList = contactList.filter(contact => contact.id !== id);
     setContactList(newContactList);
     saveContacts(newContactList);
-  };
+  }
 
   useEffect(() => {
     saveContacts(contactList);
   }, [contactList]);
+
+  useEffect(() => {
+    setFilteredContacts(contactList.filter(contact => contact.name.toLowerCase().includes(searchValue.toLowerCase())));
+  }, [searchValue, contactList]);
 
   return (
     <div className={css.app}>
@@ -46,10 +59,10 @@ export default function App() {
         <ContactForm />
       </div>
       <div className={css.card}>
-        <SearchBox />
+        <SearchBox searchValue={searchValue} onSearch={setSearchValue} />
       </div>
       <div className={css.list}>
-        <ContactList contactList={contactList} onDelete={onDelete} onReset={resetContacts} />
+        <ContactList contactList={filteredContacts} onDelete={onDelete} onReset={resetContacts} />
       </div>
     </div>
   );

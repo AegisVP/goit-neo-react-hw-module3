@@ -1,0 +1,22 @@
+.box {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 10px;
+}
+
+.label {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: start;
+}
+
+.input {
+  width: 100%;
+}
